@@ -1,0 +1,4877 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廉心向党题库</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .search-box, .type-filter {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .question-id {
+            font-weight: bold;
+        }
+        
+        .question-type {
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            color: white;
+        }
+        
+        .question-stem {
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .options-list {
+            margin-bottom: 15px;
+        }
+        
+        .option {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .option.selected {
+            background-color: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        
+        .correct-option {
+            background-color: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        
+        .incorrect-option {
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .answer-section {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .answer-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1976d2;
+        }
+        
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .type-single .question-type { background-color: #2196f3; }
+        .type-multiple .question-type { background-color: #ff9800; }
+        .type-truefalse .question-type { background-color: #9c27b0; }
+        .type-judge .question-type { background-color: #9c27b0; }
+        .type-text .question-type { background-color: #4caf50; }
+        
+        .text-answer {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .check-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        
+        .check-btn:hover {
+            background-color: #388e3c;
+        }
+        
+        .show-answer-btn {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .show-answer-btn:hover {
+            background-color: #1976d2;
+        }
+        
+        .result-message {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>廉心向党题库</h1>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-count">0</div>
+                    <div>总题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="single-count">0</div>
+                    <div>单选题</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="multiple-count">0</div>
+                    <div>多选题</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="truefalse-count">0</div>
+                    <div>判断题</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="text-count">0</div>
+                    <div>填空题</div>
+                </div>
+            </div>
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-value" id="answered-count">0</div>
+                    <div>已答题</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value" id="correct-count">0</div>
+                    <div>正确</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value" id="incorrect-count">0</div>
+                    <div>错误</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value" id="score-percent">0%</div>
+                    <div>正确率</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="filter-controls">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="搜索题目...">
+            </div>
+            <div class="type-filter">
+                <select id="type-filter">
+                    <option value="all">所有类型</option>
+                    <option value="single">单选题</option>
+                    <option value="multiple">多选题</option>
+                    <option value="truefalse">判断题</option>
+                    <option value="text">填空题</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="questions-container">
+            <!-- 题目将在这里动态生成 -->
+        </div>
+        
+        <footer>
+            <p>廉心向党题库展示系统 &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // 直接使用JavaScript定义题目数据
+        const questionsData = {
+  "questions": [
+    {
+      "id": "q1",
+      "type": "single",
+      "stem": "习近平总书记强调，廉，重在______，贵在持久，难在彻底。( )",
+      "options": [
+        "自律",
+        "自觉",
+        "自省",
+        "自警"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q2",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 党员受到警告处分______内，不得在党内提拔职务或者进一步使用。( )",
+      "options": [
+        "半年",
+        "一年",
+        "一年半",
+        "二年"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q3",
+      "type": "single",
+      "stem": "《党政机关厉行节约反对浪费条例》适用于党的机关、人大机关、行政机关、政协机关、监察机关、审判机关、检察机关，以及工会、共青团、妇联等人民团体和______。( )",
+      "options": [
+        "所有事业单位",
+        "参照公务员法管理的事业单位",
+        "国有企业",
+        "社会组织"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q4",
+      "type": "single",
+      "stem": "中央八项规定要求，要改进______，到基层调研要深入了解真实情况，总结经验、研究问题、解决困难、指导工作， 向群众学习、向实践学习。( )",
+      "options": [
+        "调查研究",
+        "工作作风",
+        "会风"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q5",
+      "type": "single",
+      "stem": "习近平总书记指出，作风问题本质上是______问题。( )",
+      "options": [
+        "党性",
+        "纪律",
+        "品德",
+        "宗旨"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q6",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定，对于在立案审查中因涉嫌违犯党纪被免职的党员，审查后依照本条例规定应当给予撤销党内职务处分的，应当按照其______给予撤销党内职务处分。( )",
+      "options": [
+        "原任职级",
+        "现任职级",
+        "原任职务",
+        "现任职务"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q7",
+      "type": "single",
+      "stem": "《党政机关厉行节约反对浪费条例》中所称浪费，是指党政机关及其工作人员违反规定进行不必要的公务活动，或者在履行公务中超出规定范围、标准和要求，不当使用______，给国家和社会造成损失的行为。( )",
+      "options": [
+        "公共资金、资产和资源",
+        "办公资源",
+        "国有资产",
+        "财政资金"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q8",
+      "type": "single",
+      "stem": "党的历史上第一个党章是在______通过的。( )",
+      "options": [
+        "中共一大",
+        "中共二大",
+        "中共三大",
+        "中共四大"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q9",
+      "type": "single",
+      "stem": "中央八项规定要求，要精简会议活动，切实改进会风，提高会议实效，______会议活动数量，严格控制会议活动规模和时间。( )",
+      "options": [
+        "严格控制",
+        "大力压缩",
+        "适当减少",
+        "逐步取消"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q10",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 党员干部受到党纪处分，需要同时进行______的，党组织应当按照规定给予______。( )",
+      "options": [
+        "组织处分、组织处分",
+        "组织处理、组织处理",
+        "干部免职、干部免职",
+        "诫勉谈话、诫勉谈话"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q11",
+      "type": "single",
+      "stem": "习近平总书记强调，领导干部要有组织观念、程序观念，该请示的必须请示，该报告的必须报告，决不能______。( )",
+      "options": [
+        "独断专行",
+        "自行其是",
+        "阳奉阴违",
+        "敷衍了事"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q12",
+      "type": "single",
+      "stem": "《党政机关厉行节约反对浪费条例》规定， 党政机关办公用房建设项目应当按照______原则，严格执行办公用房建设标准、单位综合造价标准和公共建筑节能设计标准。( )",
+      "options": [
+        "朴素、实用、安全、节能",
+        "豪华、大气、美观",
+        "实用、高效、便捷",
+        "简约、现代、环保"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q13",
+      "type": "single",
+      "stem": "某单位党员干部在乡村振兴调研中，为图方便仅走访提前布置好的“示范点”，未深入了解村民真实诉求。这一行为违背了中央八项规定中对哪项工作的改进要求？( )",
+      "options": [
+        "调查研究",
+        "工作作风",
+        "会风",
+        "文风"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q14",
+      "type": "single",
+      "stem": "习近平总书记指出，要把______作为终身课题，常修常炼，要信一辈子、守一辈子。( )",
+      "options": [
+        "坚定理想信念",
+        "为民服务",
+        "廉洁自律",
+        "理论学习"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q15",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》要求党员领导干部廉洁齐家，自觉带头树立______的良好家风。( )",
+      "options": [
+        "艰苦朴素",
+        "廉洁修身",
+        "崇廉尚德",
+        "勤俭节约"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q16",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》对党员的廉洁自律规范包括：坚持公私分明，_________；坚持崇廉拒腐，清白做人，干净做事；坚持尚俭戒奢，艰苦朴素，勤俭节约；坚持吃苦在前，享受在后，甘于奉献。 ( )",
+      "options": [
+        "先公后私，克己奉公",
+        "公私兼顾",
+        "大公无私",
+        "公而忘私"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q17",
+      "type": "single",
+      "stem": "《中国共产党党内监督条例》规定， 党的领导干部应当每年在党委常委会（或党组）扩大会议上述责述廉，接受评议。述责述廉报告应当载入_______，并在一定范围内公开。( )",
+      "options": [
+        "廉洁档案",
+        "工作档案",
+        "个人档案",
+        "组织档案"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q18",
+      "type": "single",
+      "stem": "对于严重违犯党纪、本身又不能纠正的党组织，上一级党的委员会在查明核实后，根据情节严重的程度，可以予以_______。( ) ①改组 ②重组 ③解散 ④合并",
+      "options": [
+        "①③",
+        "①②",
+        "②③",
+        "③④"
+      ],
+      "answer": [0],
+      "explanation": "参考答案：A",
+      "points": 2
+    },
+    {
+      "id": "q19",
+      "type": "single",
+      "stem": "党员受到留党察看处分，其党内职务_______。( )",
+      "options": [
+        "自然撤销",
+        "暂时保留",
+        "视情况而定",
+        "由党组织决定是否保留"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q20",
+      "type": "single",
+      "stem": "《关于新形势下党内政治生活的若干准则》指出，______是党的生命，是党内政治生活积极健康的重要基础。( )",
+      "options": [
+        "党内民主",
+        "党的纪律",
+        "党的团结",
+        "党的领导"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q21",
+      "type": "single",
+      "stem": "中央八项规定要求，要精简文件简报，切实改进文风，没有实质内容、可发可不发的文件、简报_______。( )",
+      "options": [
+        "尽量少发",
+        "一律不发",
+        "适当减少",
+        "严格审批后再发"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q22",
+      "type": "single",
+      "stem": "利用职务上的便利，占用公物归个人使用，时间超过________，情节较重的，给予警告或者严重警告处分；情节严重的，给予撤销党内职务处分。( )",
+      "options": [
+        "三个月",
+        "六个月",
+        "九个月",
+        "一年"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q23",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 在操办婚丧喜庆事宜中，借机敛财或者有其他侵犯国家、集体和人民利益行为的， 依照规定______处分，直至开除党籍。( )",
+      "options": [
+        "加重",
+        "从重",
+        "从重或者加重",
+        "减轻"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q24",
+      "type": "single",
+      "stem": "党的各级纪律检查委员会是党内监督的______机关。( )",
+      "options": [
+        "专责",
+        "专门",
+        "专职",
+        "专项"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q25",
+      "type": "single",
+      "stem": "党员领导干部违反有关规定组织、参加自发成立的老乡会、校友会、战友会等，情节严重的，给予_______处分。( )",
+      "options": [
+        "警告或严重警告",
+        "严重警告或撤销党内职务",
+        "警告、严重警告或撤销党内职务",
+        "留党察看、撤销党内职务或开除党籍"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q26",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 通过信息网络、广播、电视、报刊、书籍、讲座、论坛、报告会、座谈会等方式，公开发表坚持资产阶级自由化立场、反对四项基本原则，反对党的改革开放决策的文章、演说、宣言、声明等的，给予_______处分。( )",
+      "options": [
+        "警告",
+        "严重警告",
+        "撤销党内职务",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q27",
+      "type": "single",
+      "stem": "监察机关办理职务违法和职务犯罪案件，应当与审判机关、检察机关、_________互相配合，互相制约。( )",
+      "options": [
+        "执法部门",
+        "公安机关",
+        "司法行政部门",
+        "审计部门"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q28",
+      "type": "single",
+      "stem": "对党员的纪律处分种类中，不包括以下哪一项_________？( )",
+      "options": [
+        "记过",
+        "警告",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q29",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》要求党员领导干部廉洁从政，自觉保持_______本色。( )",
+      "options": [
+        "人民公仆",
+        "共产党人",
+        "廉洁奉公",
+        "清正廉洁"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q30",
+      "type": "single",
+      "stem": "党组织在纪律审查中发现党员有贪污贿赂、滥用职权、玩忽职守、权力寻租、利益输送、徇私舞弊、浪费国家资财等违反法律涉嫌犯罪行为的，应当给予_______、留党察看或者开除党籍处分。( )",
+      "options": [
+        "警告",
+        "严重警告",
+        "撤销党内职务",
+        "通报批评"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q31",
+      "type": "single",
+      "stem": "违反有关规定取得、持有、实际使用运动健身卡、会所和俱乐部会员卡、高尔夫球卡等各种消费卡，或者违反有关规定出入私人会所，情节较重的，给予_______处分。( )",
+      "options": [
+        "警告或者严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q32",
+      "type": "single",
+      "stem": "《关于实行党风廉政建设责任制的规定》指出，实行党风廉政建设责任制，要坚持党委统一领导，____________，纪委组织协调，部门各负其责，依靠群众的支持和参与。( )",
+      "options": [
+        "党政齐抓共管",
+        "政府主要负责",
+        "党委直接负责",
+        "党政共同负责"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q33",
+      "type": "single",
+      "stem": "党的纪律是党的生命线，严明党的纪律，首要的就是严明_______。 ( )",
+      "options": [
+        "组织纪律",
+        "政治纪律",
+        "廉洁纪律",
+        "群众纪律"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q34",
+      "type": "single",
+      "stem": "党员违反民主集中制原则，拒不执行或者擅自改变党组织作出的重大决定，或者违反_________，个人或者少数人决定重大问题的，给予警告或者严重警告处分。( )",
+      "options": [
+        "议事规则",
+        "行政规则",
+        "决策程序",
+        "组织程序"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q35",
+      "type": "single",
+      "stem": "利用职权或者职务上的影响，违反有关规定占用公物归个人使用，时间超过六个月，情节较重的，给予_______处分。( )",
+      "options": [
+        "警告或者严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q36",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 在国（境） 外、外国驻华使（领）馆申请政治避难，或者违纪后逃往国（境）外、外国驻华使（领）馆的，给予______处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q37",
+      "type": "single",
+      "stem": "党员领导干部违反规定从事营利活动，拥有非上市公司（企业）的股份或者证券的，情节较轻的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予_______处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q38",
+      "type": "single",
+      "stem": "《党政机关国内公务接待管理规定》指出， 公务接待费用应当全部纳入预算管理，单独列示。禁止在接待费中列支应当由_______承担的费用。( )",
+      "options": [
+        "接待对象",
+        "本单位",
+        "上级单位",
+        "下级单位"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q39",
+      "type": "single",
+      "stem": "监察委员会依照法律规定独立行使监察权，不受行政机关、社会团体和_______的干涉。( )",
+      "options": [
+        "个人",
+        "政党",
+        "企事业单位",
+        "其他机关"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q40",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 党员被依法判处刑罚后，不按照规定给予党纪处分，或者对违反国家法律法规的行为，应当给予党纪处分而不处分的，对直接责任者和领导责任者，情节较重的，给予_________处分。( )",
+      "options": [
+        "警告或者严重警告",
+        "撤销党内职务或者留党察看",
+        "留党察看或者开除党籍",
+        "开除党籍"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q41",
+      "type": "single",
+      "stem": "违反有关规定组织、参加用公款支付的宴请、高消费娱乐、健身活动，或者用公款购买赠送、发放礼品，对直接责任者和领导责任者，情节较轻的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予_________处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q42",
+      "type": "single",
+      "stem": "党的各级组织和全体党员必须遵守的行为规则是________。( )",
+      "options": [
+        "党的纪律",
+        "党的章程",
+        "党的制度",
+        "党的规矩"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q43",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》要求党员领导干部廉洁用权，自觉维护________利益。( )",
+      "options": [
+        "人民",
+        "国家",
+        "集体",
+        "党"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q44",
+      "type": "single",
+      "stem": "对于严重违犯党纪的党组织，处理措施包括_______和解散。( )",
+      "options": [
+        "改组",
+        "重组",
+        "合并",
+        "撤销"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q45",
+      "type": "single",
+      "stem": "党员受到开除党籍处分，_________内不得重新入党，也不得推荐担任与其原任职务相当或者高于其原任职务的党外职务。( )",
+      "options": [
+        "二年",
+        "三年",
+        "四年",
+        "五年"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q46",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 在干部选拔任用工作中，违反干部选拔任用规定，对直接责任者和领导责任者，情节较轻的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予_______处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q47",
+      "type": "single",
+      "stem": "利用职权或者职务上的影响，为本人或者他人谋取私利，情节较轻的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予______处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q48",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 在考试、录取工作中，有泄露试题、考场舞弊、涂改考卷、违规录取等违反有关规定行为的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予_______处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q49",
+      "type": "single",
+      "stem": "违反有关规定在经济组织、社会组织等单位中兼职，或者经批准兼职但获取薪酬、奖金、津贴等额外利益的，情节较轻的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予_____处分。( )",
+      "options": [
+        "严重警告",
+        "撤销党内职务",
+        "留党察看",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q50",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》规定， 党员领导干部违反有关规定干预和插手市场经济活动，有下列行为之一，造成不良影响的，给予警告或者严重警告处分；情节较重的，给予撤销党内职务或者留党察看处分；情节严重的，给予开除党籍处分。以下不属于该规定行为的是________。( )",
+      "options": [
+        "干预和插手建设工程项目承发包、土地使用权出让、政府采购、房地产开发与经营、矿产资源开发利用、中介机构服务等活动的",
+        "干预和插手国有企业重组改制、兼并、破产、产权交易、清产核资、资产评估、资产转让、重大项目投资以及其他重大经营活动等事项的",
+        "干预和插手批办各类行政许可和资金借贷等事项的",
+        "干预和插手本单位内部文件收发、办公用品领用等日常行政事务的"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q51",
+      "type": "single",
+      "stem": "中国共产党对腐败问题的态度是________。( )",
+      "options": [
+        "容忍",
+        "坚决反对",
+        "放任",
+        "适度妥协"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q52",
+      "type": "single",
+      "stem": "党风廉政建设的核心是________。( )",
+      "options": [
+        "维护党的形象",
+        "保持党同人民群众的血肉联系",
+        "提高党员素质",
+        "加强制度建设"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q53",
+      "type": "single",
+      "stem": "“廉心向党”的本质要求是党员干部要始终坚守_______。( )",
+      "options": [
+        "个人利益至上",
+        "党的纪律和规矩",
+        "人情关系优先",
+        "权力寻租空间"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q54",
+      "type": "single",
+      "stem": "党的根本宗旨是_______，这是廉政建设的根本出发点。( )",
+      "options": [
+        "全心全意为人民服务",
+        "实现共产主义",
+        "建设社会主义现代化国家",
+        "维护社会稳定"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q55",
+      "type": "single",
+      "stem": "下列不属于党的纪律处分种类的是_______。( )",
+      "options": [
+        "警告",
+        "严重警告",
+        "开除党籍",
+        "罚款"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q56",
+      "type": "single",
+      "stem": "廉政教育的首要任务是引导党员干部树立正确的_______。( )",
+      "options": [
+        "权力观、地位观、利益观",
+        "消费观、娱乐观、社交观",
+        "政绩观、效率观、竞争观",
+        "家庭观、朋友观、同事观"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q57",
+      "type": "single",
+      "stem": "中国共产党历史上第一部关于反腐败的党内法规是_______。( )",
+      "options": [
+        "《中国共产党纪律处分条例》",
+        "《关于坚决清洗贪污腐化分子的通告》",
+        "《中国共产党廉洁自律准则》",
+        "《中国共产党党内监督条例》"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q58",
+      "type": "single",
+      "stem": "“不敢腐、不能腐、不想腐”一体推进中，“不想腐”的关键在于_______。( )",
+      "options": [
+        "严厉惩处",
+        "制度约束",
+        "思想自觉",
+        "群众监督"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q59",
+      "type": "single",
+      "stem": "党员干部收受可能影响公正执行公务的礼品、礼金、消费卡等，属于违反_______。( )",
+      "options": [
+        "政治纪律",
+        "组织纪律",
+        "廉洁纪律",
+        "工作纪律"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q60",
+      "type": "single",
+      "stem": "党的十八大以来，反腐败斗争取得压倒性胜利并全面巩固，其根本保证是_______ ( )",
+      "options": [
+        "群众支持",
+        "科技手段",
+        "党中央坚强领导",
+        "国际社会认可"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q61",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》对党员领导干部提出的“四个自觉”中，不包括_______。( )",
+      "options": [
+        "自觉保持人民公仆本色",
+        "自觉维护人民根本利益",
+        "自觉提升个人生活品质",
+        "自觉带头树立良好家风"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q62",
+      "type": "single",
+      "stem": "廉政文化建设的核心是_______。( )",
+      "options": [
+        "倡导廉洁理念",
+        "举办文艺活动",
+        "建设廉政场馆",
+        "宣传廉政人物"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q63",
+      "type": "single",
+      "stem": "党员干部利用职权或职务上的影响为本人或他人谋取利益，属于违反_______。( )",
+      "options": [
+        "廉洁纪律",
+        "生活纪律",
+        "政治纪律",
+        "群众纪律"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q64",
+      "type": "single",
+      "stem": "下列哪项不属于“四风”问题的范畴_______。( )",
+      "options": [
+        "形式主义",
+        "官僚主义",
+        "享乐主义",
+        "集体主义"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q65",
+      "type": "single",
+      "stem": "党内监督的重点对象是_______ ( )",
+      "options": [
+        "普通党员",
+        "各级领导机关和领导干部",
+        "基层党组织",
+        "年轻党员"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q66",
+      "type": "single",
+      "stem": "“廉心向党”要求党员干部始终把_______放在首位。( )",
+      "options": [
+        "党的事业",
+        "个人前途",
+        "家庭利益",
+        "朋友情谊"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q67",
+      "type": "single",
+      "stem": "对党组织和党员违反党纪的行为，应当以_______为依据，以党章、其他党内法规和国家法律法规为准绳。( )",
+      "options": [
+        "主观判断",
+        "群众举报",
+        "事实",
+        "舆论评价"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q68",
+      "type": "single",
+      "stem": "党员干部如实报告个人有关事项，是遵守_______的要求。( )",
+      "options": [
+        "组织纪律",
+        "廉洁纪律",
+        "工作纪律",
+        "生活纪律"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q69",
+      "type": "single",
+      "stem": "反腐败国际合作的主要目的是_______ ( )",
+      "options": [
+        "提升国际形象",
+        "打击跨国腐败行为",
+        "加强外交关系",
+        "促进经济合作"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q70",
+      "type": "single",
+      "stem": "《中国共产党纪律处分条例》中规定的对违反纪律行为的定性量纪，应当坚持_______的原则。( )",
+      "options": [
+        "公平公正、一视同仁",
+        "因人而异、区别对待",
+        "领导优先、特殊照顾",
+        "关系至上、人情优先"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q71",
+      "type": "single",
+      "stem": "廉政教育的重要载体不包括_______。( )",
+      "options": [
+        "警示教育基地",
+        "廉政党课",
+        "私人宴请",
+        "廉政主题活动"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q72",
+      "type": "single",
+      "stem": "党员干部必须坚定理想信念， 理想信念是共产党人精神上的_______。( )",
+      "options": [
+        "“钙”",
+        "“粮”",
+        "“魂”",
+        "“根”"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q73",
+      "type": "single",
+      "stem": "下列行为中，属于廉洁从政行为的是_______。( )",
+      "options": [
+        "拒收礼品礼金",
+        "接受管理服务对象宴请",
+        "利用职权为亲友谋利",
+        "占用公物归个人使用"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q74",
+      "type": "single",
+      "stem": "党的政治建设是党的根本性建设，决定党的建设_______。( )",
+      "options": [
+        "方向和效果",
+        "速度和规模",
+        "质量和数量",
+        "内容和形式"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q75",
+      "type": "single",
+      "stem": "党的十八大以来，党中央持续推进党风廉政建设和反腐败斗争，强调“_______”是党的生命线和根本工作路线。( )",
+      "options": [
+        "实事求是",
+        "群众路线",
+        "独立自主",
+        "统一战线"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q76",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》分为党员廉洁自律规范和_______廉洁自律规范两部分。( )",
+      "options": [
+        "党员领导干部",
+        "基层党员",
+        "基层干部",
+        "高级干部"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q77",
+      "type": "single",
+      "stem": "党员干部要坚决抵制“四风”，其中“四风”指形式主义、官僚主义、享乐主义和_______。( )",
+      "options": [
+        "奢靡之风",
+        "拜金主义",
+        "个人主义",
+        "自由主义"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q78",
+      "type": "single",
+      "stem": "“两个维护”是指坚决维护习近平总书记党中央的核心、全党的核心地位，坚决维护_______。( )",
+      "options": [
+        "党的团结统一",
+        "党中央权威和集中统一领导",
+        "党的基本路线",
+        "党的领导"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q79",
+      "type": "single",
+      "stem": "党员干部利用职权或职务影响为配偶、子女及其配偶等亲属和其他特定关系人谋取利益，属于_______行为。( )",
+      "options": [
+        "拉帮结派",
+        "以权谋私",
+        "跑官要官",
+        "吃拿卡要"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q80",
+      "type": "single",
+      "stem": "党员干部要自觉抵制_______，保持清正廉洁的政治本色。( )",
+      "options": [
+        "各种不正之风",
+        "正常的人际交往",
+        "合理的工作安排",
+        "必要的公务活动"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q81",
+      "type": "single",
+      "stem": "党员干部在公务活动中，不得_______。( )",
+      "options": [
+        "遵守公务接待标准",
+        "超标准接待",
+        "简化公务流程",
+        "提高工作效率"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q82",
+      "type": "single",
+      "stem": "《中国共产党廉洁自律准则》是对_______的正面倡导。( )",
+      "options": [
+        "党员和党员领导干部廉洁自律",
+        "党员违法犯罪处理",
+        "党组织建设要求",
+        "党员工作能力提升"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q83",
+      "type": "single",
+      "stem": "反腐败斗争的基本方针是_______。( )",
+      "options": [
+        "一体推进不敢腐、不想腐、不能腐",
+        "严厉打击、从重处罚、以儆效尤",
+        "教育为主、惩罚为辅、自我整改",
+        "群众监督、舆论曝光、纪委问责"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q84",
+      "type": "single",
+      "stem": "党员干部要做到“三严三实”，其中“三严”不包括_______。( )",
+      "options": [
+        "严以修身",
+        "严以用权",
+        "严以律己",
+        "严以待人"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q85",
+      "type": "single",
+      "stem": "“廉心向党”强调党员干部要始终对党忠诚，对党忠诚的核心是_______。( )",
+      "options": [
+        "维护党的团结统一",
+        "遵守党的章程",
+        "执行党的决定",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q86",
+      "type": "single",
+      "stem": "党员干部利用职务上的便利，为他人谋取利益，其配偶收受对方财物，情节严重的，对该党员干部应给予_______处分。( )",
+      "options": [
+        "警告",
+        "记过",
+        "撤销党内职务",
+        "开除党籍"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q87",
+      "type": "single",
+      "stem": "廉政教育要注重_______，将廉洁理念融入日常工作和生活。( )",
+      "options": [
+        "常态化、制度化",
+        "阶段性、突击性",
+        "形式化、表面化",
+        "娱乐化、随意化"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q88",
+      "type": "single",
+      "stem": "党的纪律是党的各级组织和全体党员必须遵守的_______，是维护党的团结统一、完成党的任务的保证。( )",
+      "options": [
+        "行为规则",
+        "道德规范",
+        "工作标准",
+        "生活准则"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q89",
+      "type": "single",
+      "stem": "下列行为中，违反政治纪律的是_______。( )",
+      "options": [
+        "发表有损党的形象的言论",
+        "迟到早退",
+        "按规定报告个人事项",
+        "浪费办公用品"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q90",
+      "type": "single",
+      "stem": "党员干部要树立正确的政绩观，坚决反对_______。( )",
+      "options": [
+        "真抓实干",
+        "实事求是",
+        "急功近利",
+        "艰苦奋斗"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q91",
+      "type": "single",
+      "stem": "“不敢腐”的实现主要依靠_______。( )",
+      "options": [
+        "思想教育",
+        "制度约束",
+        "严厉惩处",
+        "自我约束"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q92",
+      "type": "single",
+      "stem": "党员干部不得利用职权或职务上的影响，为_______谋取利益。( )",
+      "options": [
+        "本人",
+        "配偶、子女及其配偶等亲属",
+        "其他特定关系人",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q93",
+      "type": "single",
+      "stem": "廉政文化建设的目标是培育_______的社会风尚。( )",
+      "options": [
+        "崇廉尚洁",
+        "追求享乐",
+        "人情至上",
+        "权力崇拜"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q94",
+      "type": "single",
+      "stem": "党的十八大以来，党中央以“得罪千百人、不负十四亿”的使命担当祛疴治乱，开展了史无前例的反腐败斗争，其根本立场是_______。 ( )",
+      "options": [
+        "维护党的执政地位",
+        "保障人民根本利益",
+        "推动经济发展",
+        "维护社会稳定"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q95",
+      "type": "single",
+      "stem": "党员受到撤销党内职务处分，_______内不得在党内担任和向党外组织推荐担任与其原任职务相当或者高于其原任职务的职务。( )",
+      "options": [
+        "一年",
+        "一年半",
+        "两年",
+        "三年"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q96",
+      "type": "single",
+      "stem": "“廉心向党”要求党员干部在工作中要坚持_______，杜绝权力滥用。( )",
+      "options": [
+        "依法行政",
+        "个人意志",
+        "人情关系",
+        "利益优先"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q97",
+      "type": "single",
+      "stem": "党员干部对涉及群众生产、生活等切身利益的问题依照政策或者有关规定能解决而不及时解决，庸懒无为、效率低下， 属于违反_______纪律。( )",
+      "options": [
+        "群众纪律",
+        "工作纪律",
+        "廉洁纪律",
+        "组织纪律"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q98",
+      "type": "single",
+      "stem": "“五条禁令”中规定，严禁_______利用职权或职务影响为配偶、子女及其配偶等亲属和其他特定关系人谋取利益。( )",
+      "options": [
+        "党员干部",
+        "领导干部",
+        "所有公职人员",
+        "基层干部"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q99",
+      "type": "single",
+      "stem": "党的纪律处分工作应当坚持党要管党、全面从严治党，坚持党纪面前一律平等，坚持实事求是，坚持民主集中制，坚持惩前毖后、 _______。( )",
+      "options": [
+        "治病救人",
+        "批评教育",
+        "纪律震慑",
+        "组织处理"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q100",
+      "type": "single",
+      "stem": "100．党员干部要带头践行社会主义核心价值观，弘扬中华民族传统美德，_______。( )",
+      "options": [
+        "明大德、守公德、严私德",
+        "重能力、轻品德",
+        "只讲工作实绩",
+        "追求个人名利"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q101",
+      "type": "single",
+      "stem": "“不能腐”的关键在于构建_______的制度体系。( )",
+      "options": [
+        "权责清晰、流程规范、监督有效",
+        "灵活宽松、弹性执行、便于变通",
+        "简单粗放、模糊不清、缺乏约束",
+        "注重形式、忽略实效、流于表面"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q102",
+      "type": "single",
+      "stem": "党员干部在对外交往中，要维护_______，不得损害党和国家的利益。( )",
+      "options": [
+        "个人形象",
+        "党的形象",
+        "朋友关系",
+        "私人利益"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q103",
+      "type": "single",
+      "stem": "廉政教育的对象是_______。( )",
+      "options": [
+        "仅党员领导干部",
+        "仅普通党员",
+        "全体党员干部",
+        "仅机关工作人员"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q104",
+      "type": "single",
+      "stem": "党员干部违反有关规定干预和插手市场经济活动， 属于违反_______。( )",
+      "options": [
+        "工作纪律",
+        "廉洁纪律",
+        "政治纪律",
+        "群众纪律"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q105",
+      "type": "single",
+      "stem": "“廉心向党”的核心是党员干部要始终_______。( )",
+      "options": [
+        "把党和人民的利益放在首位",
+        "把个人利益放在首位",
+        "把家庭利益放在首位",
+        "把朋友利益放在首位"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q106",
+      "type": "single",
+      "stem": "“廉心向党”最终要落实到_______的实践中，为党和人民的事业贡献力量。( )",
+      "options": [
+        "廉洁从政、为民服务",
+        "追求名利、贪图享受",
+        "拉帮结派、搞小圈子",
+        "消极怠工、敷衍塞责"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q107",
+      "type": "single",
+      "stem": "反腐败斗争的长期性、复杂性、艰巨性，决定了我们必须______。 ( )",
+      "options": [
+        "松懈麻痹",
+        "持之以恒",
+        "时紧时松",
+        "半途而废"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q108",
+      "type": "single",
+      "stem": "108．根据《党政机关厉行节约反对浪费条例》，党政机关应当遵循____的原则，严格执行预算，严禁超预算或者无预算安排支出。( )",
+      "options": [
+        "先预算后支出",
+        "先审批后支出",
+        "先使用后结算",
+        "先报告后支出"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q109",
+      "type": "single",
+      "stem": "109．党政机关国内差旅人员的差旅费用，应当由____承担，不得向下级单位、企业或其他单位转嫁。( )",
+      "options": [
+        "接待单位",
+        "派出单位",
+        "个人",
+        "财政部门"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q110",
+      "type": "single",
+      "stem": "110．因公临时出国（境） 团组不得违反规定乘坐____，需严格按标准安排交通工具。( )",
+      "options": [
+        "经济舱",
+        "商务舱",
+        "头等舱",
+        "高铁二等座"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q111",
+      "type": "single",
+      "stem": "111．公务接待费用应当全部纳入预算管理，____以任何名义转嫁到下属单位或者其他单位、个人。( )",
+      "options": [
+        "可以",
+        "不得",
+        "经批准后可以",
+        "特殊情况可以"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q112",
+      "type": "single",
+      "stem": "112．党政机关应当对公务用车实行____，严格登记和公示用车相关信息。( )",
+      "options": [
+        "集中管理、统一调度",
+        "分散管理、自行调度",
+        "委托管理、第三方调度",
+        "部门管理、交叉调度"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q113",
+      "type": "single",
+      "stem": "113．会议召开场所实行____制度，应优先选择机关内部会议室、礼堂等场所。( )",
+      "options": [
+        "定点管理",
+        "自主选择",
+        "审批备案",
+        "费用包干"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q114",
+      "type": "single",
+      "stem": "114．党政机关办公用房建设应当从严控制，凡是违反规定的拟建办公用房项目，____批准。( )",
+      "options": [
+        "暂缓",
+        "不得",
+        "视情况",
+        "经上级同意后"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q115",
+      "type": "single",
+      "stem": "115．党政机关应当节约集约利用资源，提高能源、水、办公设备等的___。( )",
+      "options": [
+        "采购标准",
+        "更新频率",
+        "使用效率和效益",
+        "库存数量"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q116",
+      "type": "single",
+      "stem": "116．违反《党政机关厉行节约反对浪费条例》规定造成浪费的，应当依纪依法追究____的责任。( )",
+      "options": [
+        "直接责任人员",
+        "主要领导、分管领导",
+        "相关领导干部",
+        "直接责任人员和领导人员"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q117",
+      "type": "single",
+      "stem": "117．党政机关严禁以____名义和方式变相旅游，从严控制无明确公务目的的差旅活动。( )",
+      "options": [
+        "学习、培训",
+        "考察、调研",
+        "交流、合作",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q118",
+      "type": "single",
+      "stem": "118．因公临时出国（境） 团组人员构成应当符合____原则，不得安排与公务无关人员随行。( )",
+      "options": [
+        "精简、务实",
+        "豪华、全面",
+        "随意、灵活",
+        "广泛、多样"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q119",
+      "type": "single",
+      "stem": "119．公务接待单位不得为接待对象额外配发____，不得超标准安排接待住房。( )",
+      "options": [
+        "洗漱用品",
+        "纪念品",
+        "办公用品",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q120",
+      "type": "single",
+      "stem": "120．党政机关取消一般公务用车后，保留的___实行定向化保障。( )",
+      "options": [
+        "执法执勤用车",
+        "机要通信用车",
+        "应急保障用车",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q121",
+      "type": "single",
+      "stem": "121．会议费应当纳入预算管理，严禁借会议名义组织____，严禁套取会议资金。( )",
+      "options": [
+        "宴请",
+        "旅游",
+        "娱乐活动",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q122",
+      "type": "single",
+      "stem": "122．党政机关办公用房维修改造应当以____为重点，严禁豪华装修。 ( )",
+      "options": [
+        "消除安全隐患、恢复和完善使用功能",
+        "提升外观形象、增加附属设施",
+        "扩大使用面积、增设办公设备",
+        "以上都不是"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q123",
+      "type": "single",
+      "stem": "123．党政机关应当建立健全____，将节约指标完成情况作为领导班子和领导干部考核的重要内容。( )",
+      "options": [
+        "节能目标责任制",
+        "绩效奖励制度",
+        "问责处罚制度",
+        "以上都是"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q124",
+      "type": "single",
+      "stem": "124．违反《党政机关厉行节约反对浪费条例》规定， 用公款支付、报销应由个人承担的费用，情节较重的，给予____处分。( )",
+      "options": [
+        "警告或者严重警告",
+        "撤销党内职务或者留党察看",
+        "开除党籍",
+        "批评教育"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q125",
+      "type": "single",
+      "stem": "125．党政机关应当加强对国内差旅、因公临时出国（境）等经费的_______，严禁以任何方式虚列、转嫁费用。( )",
+      "options": [
+        "预算管理",
+        "报销审核",
+        "动态监控",
+        "以上都是"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q126",
+      "type": "single",
+      "stem": "公务用车保险、维修、加油等实行_______，降低运行成本。( )",
+      "options": [
+        "定点采购、定点保险、定点维修",
+        "分散采购、自行保险、自行维修",
+        "委托采购、第三方保险、外包维修",
+        "以上都不是"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q127",
+      "type": "single",
+      "stem": "127．党政机关应当建立健全________，确保厉行节约反对浪费工作制度化、规范化。( )",
+      "options": [
+        "内部管理制度",
+        "外部监督机制",
+        "奖励处罚机制",
+        "以上都是"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q128",
+      "type": "single",
+      "stem": "128．习近平总书记指出，作风问题本质上是_______问题，“四风”问题根本上是背离了党性。( )",
+      "options": [
+        "党性",
+        "纪律",
+        "品德",
+        "宗旨"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q129",
+      "type": "single",
+      "stem": "129．增强以自我革命精神推进作风建设的政治自觉，需深化运用________，把一体推进“三不腐”融入纠治“四风”全过程。( )",
+      "options": [
+        "四种形态",
+        "四个意识",
+        "四个自信",
+        "两个维护"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q130",
+      "type": "single",
+      "stem": "130．坚持以严的基调强化_______，把党的纪律建设摆在更加突出位置。( )",
+      "options": [
+        "作风纪律",
+        "正风肃纪",
+        "从严治党",
+        "队伍建设"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q131",
+      "type": "single",
+      "stem": "131 ．党员干部要聚焦典型案例开展警示教育， 永葆在新征程上_______的清醒和坚定。( )",
+      "options": [
+        "工作",
+        "赶考",
+        "从严治党",
+        "队伍建设"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q132",
+      "type": "single",
+      "stem": "132 ．习近平总书记在党的十九届六中全会上告诫全党， 要永葆_______精神，增强全面从严治党永远在路上的政治自觉。( )",
+      "options": [
+        "自我创新",
+        "自我约束",
+        "自我革命",
+        "自我牺牲"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q133",
+      "type": "single",
+      "stem": "133．反对腐败、建设_______，保持党的肌体健康，是我们党一贯坚持的鲜明政治立场。( )",
+      "options": [
+        "廉洁政治",
+        "廉洁政府",
+        "廉洁铁军",
+        "廉洁队伍"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q134",
+      "type": "single",
+      "stem": "134．______是党的总章程，是全党必须共同遵守的根本行为规范。 ( )",
+      "options": [
+        "党章",
+        "党规",
+        "党纪",
+        "党纲"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q135",
+      "type": "single",
+      "stem": "135．从严治党必须从_______严起，这是党组织教育管理党员和党员进行党性锻炼的主要平台。( )",
+      "options": [
+        "党内组织生活",
+        "党内各项活动",
+        "党内政治生活",
+        "党内各项规矩"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q136",
+      "type": "single",
+      "stem": "136．改进工作作风，最根本的是坚持和发扬_______。( )",
+      "options": [
+        "勤俭节约精神",
+        "艰苦奋斗精神",
+        "一丝不苟精神",
+        "廉洁奉公精神"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q137",
+      "type": "single",
+      "stem": "137．新修订的《中国共产党纪律处分条例》自_______起施行。( )",
+      "options": [
+        "2018 年 8 月 1 日",
+        "2018 年 8 月 26 日",
+        "2018 年 10 月 1 日",
+        "2018 年 10 月 8 日"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q138",
+      "type": "single",
+      "stem": "138．党员受到警告处分_______内，不得在党内提升职务和向党外组织推荐担任高于其原任职务的党外职务。( )",
+      "options": [
+        "半年",
+        "一年",
+        "一年半",
+        "两年"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q139",
+      "type": "single",
+      "stem": "139．党组织在纪律审查中发现党员严重违纪涉嫌违法犯罪的，原则上先作出_______决定，再移送有关国家机关依法处理。( )",
+      "options": [
+        "行政处罚",
+        "政纪处分",
+        "组织处理",
+        "党纪处分"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q140",
+      "type": "single",
+      "stem": "140．《纪言：八项规定改变中国》指出，中央八项规定以_______撬动全面从严治党大变局，推动全党进行革命性锻造。( )",
+      "options": [
+        "大切口",
+        "小切口",
+        "大力气",
+        "小力气"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q141",
+      "type": "multiple",
+      "stem": "二、多选题 1.习近平总书记强调，加强党的作风建设，核心是保持党同人民群众的血肉联系。下列选项中，属于加强党的作风建设重要要求的有________。( )",
+      "options": [
+        "坚持全心全意为人民服务的根本宗旨",
+        "坚决反对形式主义、官僚主义、享乐主义和奢靡之风",
+        "把党的纪律建设摆在首位",
+        "以党的思想建设为统领"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q142",
+      "type": "multiple",
+      "stem": "以下属于《中国共产党纪律处分条例》中重点纠治的行为有______。 ( )",
+      "options": [
+        "漠视群众利益和疾苦行为",
+        "对群众合理诉求消极应付、推诿扯皮行为",
+        "对待群众态度恶劣、简单粗暴行为",
+        "违规收礼送礼行为"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q143",
+      "type": "multiple",
+      "stem": "党的历史上廉洁文化建设有着丰富的内涵，以下体现廉洁文化建设的是__________。( )",
+      "options": [
+        "苏区干部好作风，自带干粮去办公，日着草鞋干革命，夜打灯笼访贫农",
+        "延安整风运动",
+        "党的七届二中全会提出 “两个务必”",
+        "社会主义改造运动"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q144",
+      "type": "multiple",
+      "stem": "下列属于中央八项规定及其实施细则明确要求规范的内容有______。( )",
+      "options": [
+        "全面放开公务用车使用范围",
+        "严格控制因公出国（境）团组数量和规模",
+        "精简会议活动，切实改进会风",
+        "大幅提高领导干部办公用房面积标准"
+      ],
+      "answer": [
+        1,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q145",
+      "type": "multiple",
+      "stem": "以下关于党的作风建设的说法正确的是______。( )",
+      "options": [
+        "党的作风就是党的形象，关系人心向背",
+        "作风建设是全面从严治党的重要组成部分",
+        "要以钉钉子精神纠治“四风”",
+        "加强作风建设必须紧扣保持党同人民群众血肉联系这个关键"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q146",
+      "type": "multiple",
+      "stem": "《习近平关于党风廉政建设和反腐败斗争论述摘编》集中反映了习近平总书记关于_______的一系列新理念新思想新要求。( )",
+      "options": [
+        "持之以恒贯彻落实中央八项规定精神",
+        "深化作风建设",
+        "党风廉政建设",
+        "反腐败斗争"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q147",
+      "type": "multiple",
+      "stem": "中央八项规定中提到要改进调查研究，具体要求包括_______（ ）。",
+      "options": [
+        "轻车简从、减少陪同、简化接待",
+        "不张贴悬挂标语横幅，不安排群众迎送",
+        "要深入了解真实情况，总结经验、研究问题、解决困难、指导工作",
+        "提高会议实效，开短会、讲短话"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q148",
+      "type": "multiple",
+      "stem": "为加强廉洁纪律建设,党采取了一系列措施，包括______。( )",
+      "options": [
+        "坚决清洗贪污腐化分子",
+        "重视廉洁教育防患于未然",
+        "开展大规模的群众运动",
+        "完善法规制度夯实纪律根基"
+      ],
+      "answer": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q149",
+      "type": "multiple",
+      "stem": "新修订的《党政机关厉行节约反对浪费条例》强调，各级领导机关和领导干部必须树立正确政绩观，严禁搞_______。( )",
+      "options": [
+        "劳民伤财的 “形象工程”",
+        "脱离实际的 “政绩工程”",
+        "急功近利的 “面子工程”",
+        "华而不实的 “豆腐渣工程”"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q150",
+      "type": "multiple",
+      "stem": "《中国共产党纪律处分条例》中规定，对于违纪行为所获得的经济利益，应当___或者____。( )",
+      "options": [
+        "收缴",
+        "责令退赔",
+        "收归国库",
+        "分给社会福利组织"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q151",
+      "type": "multiple",
+      "stem": "习近平总书记关于加强党的作风建设的重要论述，全面系统阐明了加强党的作风建设的______等。( )",
+      "options": [
+        "重大意义",
+        "目标要求",
+        "路径方法",
+        "基本任务"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q152",
+      "type": "multiple",
+      "stem": "《中国共产党纪律处分条例》中，对违反政治纪律的行为有明确规定，以下属于违反政治纪律的是______。( )",
+      "options": [
+        "拒不执行党中央确定的大政方针",
+        "贯彻党中央决策部署只表态不落实或落实不坚决",
+        "违背新发展理念、背离高质量发展要求",
+        "在党内搞团团伙伙、结党营私"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q153",
+      "type": "multiple",
+      "stem": "习近平总书记关于加强______的重要论述指出，作风问题核心是_______。( )",
+      "options": [
+        "反对形式主义问题",
+        "党员的作风建设",
+        "党同人民群众的关系问题",
+        "廉洁自律问题"
+      ],
+      "answer": [
+        1,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q154",
+      "type": "multiple",
+      "stem": "以下属于习近平总书记关于加强党的作风建设重要论述的是________。( )",
+      "options": [
+        "发展才是硬道理",
+        "党风廉政建设和反腐败斗争是我们必须抓好的重大政治任务",
+        "坚持党要管党、从严治党",
+        "作风建设是党建永恒课题和长期任务"
+      ],
+      "answer": [
+        1,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q155",
+      "type": "multiple",
+      "stem": "《党政机关厉行节约反对浪费条例》强调，要坚持______的原则，降低行政成本，建设节约型机关。( )",
+      "options": [
+        "从严从简",
+        "实事求是",
+        "总量控制",
+        "依法依规"
+      ],
+      "answer": [
+        0,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q156",
+      "type": "multiple",
+      "stem": "习近平总书记指出，抓作风建设，就要返璞归真、固本培元，重点突出______。( )",
+      "options": [
+        "坚定理想信念",
+        "践行根本宗旨",
+        "提高业务能力",
+        "加强道德修养"
+      ],
+      "answer": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q157",
+      "type": "multiple",
+      "stem": "下列属于《中国共产党纪律处分条例》规定的处分种类的有______。 ( )",
+      "options": [
+        "警告",
+        "严重警告",
+        "撤销党内职务",
+        "留党察看"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q158",
+      "type": "multiple",
+      "stem": "中央八项规定要求改进新闻报道，要______。( )",
+      "options": [
+        "精简会议活动报道",
+        "精简领导同志活动报道",
+        "提高新闻报道质量和水平",
+        "减少一般性会议活动报道"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q159",
+      "type": "multiple",
+      "stem": "党的历史上，为加强廉洁纪律建设，曾采取过下列哪些措施？( )",
+      "options": [
+        "1926 年 8 月党中央向全党发出《中共中央扩大会议通告 —— 坚决清洗贪污腐化分子》",
+        "1933 年，中华苏维埃共和国发布《关于中央执行委员会第二十六号训令 —— 惩治贪污浪费行为》",
+        "1942 年开展延安整风运动",
+        "1956 年召开党的八大"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q160",
+      "type": "multiple",
+      "stem": "《党政机关厉行节约反对浪费条例》规定， 要严格执行办公用房标准，严禁______。( )",
+      "options": [
+        "超标准建设办公用房",
+        "违规占用办公用房",
+        "豪华装修办公用房",
+        "出租出借办公用房"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q161",
+      "type": "multiple",
+      "stem": "习近平总书记关于加强党的作风建设的重要论述，对于______具有十分重要的意义。( )",
+      "options": [
+        "锲而不舍贯彻中央八项规定精神",
+        "推进作风建设常态化长效化",
+        "以作风建设新成效推动保持党的先进性纯洁性",
+        "不断赢得人民群众信任拥护"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q162",
+      "type": "multiple",
+      "stem": "《习近平关于党风廉政建设和反腐败斗争论述摘编》中指出，反腐败斗争关系党的生死存亡。下列关于反腐败斗争的表述，正确的有_________。( )",
+      "options": [
+        "要坚持 “老虎”“苍蝇”一起打",
+        "反腐败只是针对少数违纪违法干部的工作",
+        "要把权力关进制度的笼子里",
+        "反腐败斗争可以阶段性放松"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q163",
+      "type": "multiple",
+      "stem": "中央八项规定及其实施细则要求，要厉行勤俭节约，严格遵守廉洁从政有关规定，严格执行住房、车辆配备等有关工作和生活待遇的规定，不得_______。( )",
+      "options": [
+        "接受礼品、礼金和宴请",
+        "违反规定享受待遇",
+        "利用职权为自己或者他人谋取私利",
+        "搞特殊化"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q164",
+      "type": "multiple",
+      "stem": "党的历史上，廉洁文化建设的经验包括______。( )",
+      "options": [
+        "加强对党员干部的思想教育",
+        "建立健全的监督机制",
+        "领导干部以身作则",
+        "依靠群众的力量"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q165",
+      "type": "multiple",
+      "stem": "《中国共产党纪律处分条例》明确了党的纪律处分的种类，同时对纪律执行提出严格要求。下列选项中，属于党的纪律处分工作应当坚持的原则有________。( )",
+      "options": [
+        "坚持党要管党、全面从严治党",
+        "党纪面前一律平等",
+        "只对党员领导干部严格要求",
+        "允许在特殊情况下突破纪律底线"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q166",
+      "type": "multiple",
+      "stem": "《党政机关厉行节约反对浪费条例》中，针对公务接待管理作出的规定有__________。( )",
+      "options": [
+        "严格控制接待范围，不得超标准接待",
+        "接待费用应当全部由接待单位承担",
+        "禁止以举办会议、培训等名义列支、转移、隐匿接待费开支",
+        "允许将公务接待费用转嫁到下属单位或企业"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q167",
+      "type": "multiple",
+      "stem": "下列属于《习近平关于党风廉政建设和反腐败斗争论述摘编》内容的有_______。( )",
+      "options": [
+        "党风廉政建设和反腐败斗争是一项长期的、复杂的、艰巨的任务",
+        "要以零容忍态度惩治腐败",
+        "坚决把党风廉政建设和反腐败斗争进行到底",
+        "加强对权力运行的制约和监督"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q168",
+      "type": "multiple",
+      "stem": "《中国共产党纪律处分条例》规定， 对于党员违反党纪的行为，应当以事实为依据，以______为准绳，准确认定违纪性质，区别不同情况，恰当予以处理。( )",
+      "options": [
+        "党的政策",
+        "其他党内法规",
+        "国家法律法规",
+        "党章"
+      ],
+      "answer": [
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q169",
+      "type": "multiple",
+      "stem": "中央八项规定实施细则进一步规范、细化和完善了中央八项规定的相关要求，在______等方面提出了更具体的措施。( )",
+      "options": [
+        "改进调查研究",
+        "精简会议活",
+        "精简文件简报",
+        "规范出访活动"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q170",
+      "type": "multiple",
+      "stem": "党的历史上廉洁文化建设的重要实践包括注重思想教育、完善制度约束，还包括________。( )",
+      "options": [
+        "发挥榜样示范作用",
+        "加强监督执纪",
+        "倡导特权思想",
+        "放松对党员干部的要求"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q171",
+      "type": "multiple",
+      "stem": "习近平总书记强调，反腐败斗争取得压倒性胜利并全面巩固，但形势依然严峻复杂。当前反腐败斗争的形势特点包括_______。( )",
+      "options": [
+        "腐败存量尚未清除",
+        "增量还在持续发生",
+        "铲除腐败滋生土壤和条件任务仍然艰巨繁重",
+        "腐败问题已得到根本解决"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q172",
+      "type": "multiple",
+      "stem": "习近平总书记指出，在深入推进党的自我革命实践中需要把握好九个问题，以下属于这九个问题的有_______。( )",
+      "options": [
+        "以坚持全心全意为人民服务为根本保证",
+        "以引领伟大社会革命为根本目的",
+        "以新时代中国特色社会主义思想为根本遵循",
+        "以解决大党独有难题为主攻方向"
+      ],
+      "answer": [
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q173",
+      "type": "multiple",
+      "stem": "习近平总书记强调，要持续保持惩治腐败高压态势，具体要做到_______。( )",
+      "options": [
+        "盯住“七个有之”问题",
+        "把严惩政商勾连的腐败作为攻坚战重中之重",
+        "深化整治金融、国企、能源等领域的腐败",
+        "惩治“蝇贪蚁腐”"
+      ],
+      "answer": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q174",
+      "type": "multiple",
+      "stem": "关于反腐败斗争，习近平总书记提出要一体推进不敢腐、不能腐、不想腐。下列说法正确的是________。( )",
+      "options": [
+        "不敢腐是前提",
+        "不能腐是根本",
+        "不想腐是关键",
+        "三者相互依存、相互促进"
+      ],
+      "answer": [
+        0,
+        3
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q175",
+      "type": "multiple",
+      "stem": "习近平总书记强调，要加强新时代廉洁文化建设，具体措施包括________。( )",
+      "options": [
+        "深入开展党性党风党纪教育",
+        "注重家庭家教家风",
+        "积极宣传廉洁理念、廉洁典型",
+        "加大对行贿行为惩治力度"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q176",
+      "type": "text",
+      "stem": "《中国共产党廉洁自律准则》对党员和党员领导干部提出了“________”的廉洁自律要求。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：四个必须",
+      "points": 2
+    },
+    {
+      "id": "q177",
+      "type": "text",
+      "stem": "党的纪律是党的各级组织和全体党员必须遵守的________，是维护 党的团结统一、完成党的任务的保证。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：行为规则",
+      "points": 2
+    },
+    {
+      "id": "q178",
+      "type": "text",
+      "stem": "党员干部要严格遵守廉洁纪律，不得利用职权或职务上的影响为本人或他人谋取________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：不正当利益",
+      "points": 2
+    },
+    {
+      "id": "q179",
+      "type": "text",
+      "stem": "________是党内监督专责机关，负责监督、执纪、问责，维护党的 纪律和规矩。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：纪律检查委员会",
+      "points": 2
+    },
+    {
+      "id": "q180",
+      "type": "text",
+      "stem": "廉政风险防控工作的核心是排查廉政风险、制定防控措施、 ________，从源头上预防腐败。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：强化监督问责",
+      "points": 2
+    },
+    {
+      "id": "q181",
+      "type": "text",
+      "stem": "《中国共产党纪律处分条例》将党的纪律划分为政治纪律、组织纪律、廉洁纪律、群众纪律、________和生活纪律六大类。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：工作纪律",
+      "points": 2
+    },
+    {
+      "id": "q182",
+      "type": "text",
+      "stem": "党员领导干部必须带头践行社会主义核心价值观， 自觉抵制各种________和错误思潮的侵蚀。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：腐朽思想",
+      "points": 2
+    },
+    {
+      "id": "q183",
+      "type": "text",
+      "stem": "反腐败斗争的基本方针是________、________、________，这是新 时代全面从严治党的重要方略。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：一体推进不敢腐 不能腐 不想腐",
+      "points": 2
+    },
+    {
+      "id": "q184",
+      "type": "text",
+      "stem": "公职人员在执行公务时，要坚持________的原则，不得滥用职权、徇私舞弊。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：公正廉洁",
+      "points": 2
+    },
+    {
+      "id": "q185",
+      "type": "text",
+      "stem": "廉政教育的目的是增强党 员干部 的纪律意识 、规矩意识和________，筑牢拒腐防变思想防线。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：廉洁自律意识",
+      "points": 2
+    },
+    {
+      "id": "q186",
+      "type": "text",
+      "stem": "严禁党员干部违规收受可能影响公正执行公务的礼品、礼金、消费卡和________等财物。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：有价证券",
+      "points": 2
+    },
+    {
+      "id": "q187",
+      "type": "text",
+      "stem": "党组织对违反党的纪律的党员，应当坚持“惩前毖后、治病救人”的方针，按照错误性质和情节轻重，给予________直至纪律处分。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：批评教育",
+      "points": 2
+    },
+    {
+      "id": "q188",
+      "type": "text",
+      "stem": "建设廉洁文化是党风廉政建设的重要组成部分，要营造崇廉尚洁、 ________的社会氛围。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：风清气正",
+      "points": 2
+    },
+    {
+      "id": "q189",
+      "type": "text",
+      "stem": "党员干部要严格执行个人有关事项报告制度，如实报告个人收入、房产、投资以及________等情况。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：配偶、子女及其配偶从业",
+      "points": 2
+    },
+    {
+      "id": "q190",
+      "type": "text",
+      "stem": "对涉嫌违纪违法的党员干部，应当按照规定程序及时向有关部门移送问题线索，依规依纪依法进行________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：审查调查",
+      "points": 2
+    },
+    {
+      "id": "q191",
+      "type": "text",
+      "stem": "党的二十大报告指出，只要存在腐败问题产生的土壤和条件，反腐败斗争就一刻不能停，必须永远吹________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：冲锋号",
+      "points": 2
+    },
+    {
+      "id": "q192",
+      "type": "text",
+      "stem": "《党章》规定， 对党员的纪律处分有五种：________、严重警告、 撤销党内职务、留党察看、开除党籍。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：警告",
+      "points": 2
+    },
+    {
+      "id": "q193",
+      "type": "text",
+      "stem": "坚决做到“两个维护”是指，坚决维护习近平总书记党中央的核心、全党的核心地位，坚决维护________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：党中央权威和集中统一领导",
+      "points": 2
+    },
+    {
+      "id": "q194",
+      "type": "text",
+      "stem": "《中国共产党廉洁自律准则》要求中国共产党全体党员和各级党员领导干部必须坚定共产主义理想和________信念。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：中国特色社会主义",
+      "points": 2
+    },
+    {
+      "id": "q195",
+      "type": "text",
+      "stem": "党员受到警告处分________内，不得在党内提拔职务或者进一步 使用。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：一年",
+      "points": 2
+    },
+    {
+      "id": "q196",
+      "type": "text",
+      "stem": "党委（党组）在党内监督中负________，书记是第一责任人。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：主体责任",
+      "points": 2
+    },
+    {
+      "id": "q197",
+      "type": "text",
+      "stem": "党的纪律主要包括政治纪律、组织纪律、廉洁纪律、群众纪律、 ________、生活纪律。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：工作纪律",
+      "points": 2
+    },
+    {
+      "id": "q198",
+      "type": "text",
+      "stem": "2024 年修订的《中国共产党纪律处分条例》明确规定，党的纪律建设必须坚持以马克思列宁主义、毛泽东思想、邓小平理论、“三个代表”重要思想、科学发展观、_______________________为指导，把________摆在首位，全面加强党的纪律建设。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：习近平新时代中国特色社会主义思想 政治建设",
+      "points": 2
+    },
+    {
+      "id": "q199",
+      "type": "text",
+      "stem": "中央八项规定实施十周年之际，党中央强调要持续深化纠治“四风”，重点纠治________、________，坚决破除特权思想和特权行为。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：形式主义 官僚主义",
+      "points": 2
+    },
+    {
+      "id": "q200",
+      "type": "text",
+      "stem": "党员领导干部违反有关规定，在经济实体、社会团体等单位中兼职，或者经批准兼职但获取________、________等额外利益的，情节较重的，给予撤销党内职务或者留党察看处分。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：薪酬 奖金",
+      "points": 2
+    },
+    {
+      "id": "q201",
+      "type": "text",
+      "stem": "《关于新形势下党内政治生活的若干准则》规定，领导干部特别是高级干部必须注重________、________、________，教育管理好亲属和身边工作人员。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：家庭 家教 家风",
+      "points": 2
+    },
+    {
+      "id": "q202",
+      "type": "text",
+      "stem": "公务员辞去公职或者退休的，原系领导成员、县处级以上领导职务的公务员在离职________年内，其他公务员在离职________年内，不得到与原工作业务直接相关的企业或者其他营利性组织任职，不得从事与原工作业务直接相关的营利性活动。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：三 两",
+      "points": 2
+    },
+    {
+      "id": "q203",
+      "type": "text",
+      "stem": "党章指出，我们党的最大政治优势是密切联系群众，党执政后的最大危险是________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：脱离群众",
+      "points": 2
+    },
+    {
+      "id": "q204",
+      "type": "text",
+      "stem": "党章指出，党的根本组织原则是________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：民主集中制",
+      "points": 2
+    },
+    {
+      "id": "q205",
+      "type": "text",
+      "stem": "________标志着中国共产党独立地领导革命战争、创建人民军队 和武装夺取政权的开始。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：南昌起义",
+      "points": 2
+    },
+    {
+      "id": "q206",
+      "type": "text",
+      "stem": "协助同级党委（党组）抓好《中国共产党纪律处分条例》的落实，并负责对________实施情况进行监督检查。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：党的纪律检查机关",
+      "points": 2
+    },
+    {
+      "id": "q207",
+      "type": "text",
+      "stem": "为全面从严治党，规范和强化党的问责工作，根据________，制 定了《中国共产党问责条例》。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：《中国共产党章程》",
+      "points": 2
+    },
+    {
+      "id": "q208",
+      "type": "text",
+      "stem": "党的________是党的根本性建设，决定党的建设方向和效果。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：政治建设",
+      "points": 2
+    },
+    {
+      "id": "q209",
+      "type": "text",
+      "stem": "党员受到开除党籍处分，________年内不得重新入党。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：5",
+      "points": 2
+    },
+    {
+      "id": "q210",
+      "type": "text",
+      "stem": "党员干部通过民间借贷等金融活动获取大额回报，影响公正执行公务的，应认定为违反________。",
+      "options": [],
+      "answer": [],
+      "explanation": "参考答案：廉洁纪律",
+      "points": 2
+    },
+    {
+      "id": "q211",
+      "type": "truefalse",
+      "stem": "党员干部可以适当接受管理服务对象安排的旅游、健身、娱乐等活动，只要不花费大额费用即可。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q212",
+      "type": "truefalse",
+      "stem": "《中国共产党廉洁自律准则》是党员干部廉洁从政的基本遵循，仅对党员领导干部有约束力。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q214",
+      "type": "truefalse",
+      "stem": "反腐败斗争已经取得压倒性胜利并全面巩固，因此可以适当放松对党员干部的廉洁要求。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q215",
+      "type": "truefalse",
+      "stem": "党员干部在工作中可以根据实际情况，灵活执行上级决策部署，无需严格按照规定程序办事。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q216",
+      "type": "truefalse",
+      "stem": "廉政风险防控的关键在于发现风险后及时整改，无需定期开展风险排查工作。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q217",
+      "type": "truefalse",
+      "stem": "党员领导干部的配偶、子女及其配偶可以在其管辖的地区和业务范围内从事营利性活动，只要不与领导干部本人直接关联即可。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q218",
+      "type": "truefalse",
+      "stem": "中央八项规定精神实施以来，“四风”问题得到有效遏制，不存在反弹回潮的风险。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q219",
+      "type": "truefalse",
+      "stem": "党员干部如实报告个人有关事项，是遵守组织纪律、接受组织监督的重要体现。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q220",
+      "type": "truefalse",
+      "stem": "对党员干部的廉洁教育，只需通过集中培训的方式开展，无需结合日常工作进行。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q221",
+      "type": "truefalse",
+      "stem": "公职人员在执行公务时，因工作需要可以临时借用管理服务对象的车辆，使用后及时归还即可。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q222",
+      "type": "truefalse",
+      "stem": "党员干部通过民间借贷获取大额回报，影响公正执行公务的，情节较重的，给予警告或严重警告处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q223",
+      "type": "truefalse",
+      "stem": "廉洁文化建设仅针对党员干部，与普通群众无关，无需在全社会推广。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q224",
+      "type": "truefalse",
+      "stem": "党员干部在网络上发表言论时，可以随意表达个人观点，无需遵守政治纪律和政治规矩。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q225",
+      "type": "truefalse",
+      "stem": "单位内部的廉政监督主要由纪检部门负责，其他部门和职工无需参与监督工作。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q226",
+      "type": "truefalse",
+      "stem": "党员干部因工作失误受到批评教育后，只要改正错误，就不会对其评优评先产生影响。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q227",
+      "type": "truefalse",
+      "stem": "严禁党员干部违规组织或参加老乡会、校友会、战友会等，防止形成小圈子、小团伙。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q228",
+      "type": "truefalse",
+      "stem": "廉政制度的制定比执行更重要，只要制度完善，就能有效预防腐败。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q229",
+      "type": "truefalse",
+      "stem": "党员干部在退休后，可以到原管辖地区或业务范围内的企业任职，利用原有资源为企业发展提供帮助。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q230",
+      "type": "truefalse",
+      "stem": "开展廉政教育是全面从严治党的重要举措，能够从思想上引导党员干部增强廉洁自律意识，预防腐败行为发生。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q231",
+      "type": "truefalse",
+      "stem": "撤销党内职务处分，是指撤销受处分党员由党内选举或者组织任命的党内职务。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q232",
+      "type": "truefalse",
+      "stem": "党员在党纪处分影响期内又受到党纪处分的，其最终影响期为两项中最长影响期。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q233",
+      "type": "truefalse",
+      "stem": "从轻处分，是指在《中国共产党纪律处分条例》规定的违纪行为应当受到的处分幅度以内，减轻一档给予处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q234",
+      "type": "truefalse",
+      "stem": "下级党组织拒不执行或者擅自改变上级党组织决定的，对主要责任者，给予警告或者严重警告处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q235",
+      "type": "truefalse",
+      "stem": "公职人员因犯罪被单处罚金，或者犯罪情节轻微，人民检察院依法作出不起诉决定或者人民法院依法免予刑事处罚的，予以开除。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q236",
+      "type": "truefalse",
+      "stem": "借用管理和服务对象的钱款、住房、车辆等，可能影响公正执行公务，情节较重的，给予警告或者严重警告处分；情节严重的，给予撤销党内职务、留党察看或者开除党籍处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q237",
+      "type": "truefalse",
+      "stem": "对党员的纪律处分种类有：警告、记过、记大过、降级、撤职、开除。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q238",
+      "type": "truefalse",
+      "stem": "《中国共产党纪律处分条例》规定， 重点查处党的十八大以来不收敛、不收手，问题线索反映集中、群众反映强烈，政治问题和经济问题交织的腐败案件，违反中央八项规定精神的问题。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q239",
+      "type": "truefalse",
+      "stem": "对党组织的问责方式包括：通报、改组、解散。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q240",
+      "type": "truefalse",
+      "stem": "党组织在纪律审查中发现党员有贪污贿赂、滥用职权、玩忽职守、权力寻租、利益输送、徇私舞弊、浪费国家资财等违反法律涉嫌犯罪行为的，应当给予撤销党内职务、留党察看或者开除党籍处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q241",
+      "type": "truefalse",
+      "stem": "干扰巡视巡察工作或者不落实巡视巡察整改要求，情节较轻的，给予撤销党内职务或者留党察看处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q242",
+      "type": "truefalse",
+      "stem": "党的纪律检查机关和国家监察机关是党和国家自我监督的专门机关。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q243",
+      "type": "truefalse",
+      "stem": "某党员领导干部采取弄虚作假手段把不符合党员条件的人发展为党员，根据新修订的《中国共产党纪律处分条例》，其违反了工作纪律。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q244",
+      "type": "truefalse",
+      "stem": "生活奢靡、铺张浪费、贪图享乐、追求低级趣味，造成不良影响的，给予撤销党内职务处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q245",
+      "type": "truefalse",
+      "stem": "违反个人有关事项报告规定，隐瞒不报，情节较重的，给予警告或者严重警告处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q246",
+      "type": "truefalse",
+      "stem": "利用职权或者职务上的影响操办婚丧喜庆事宜，造成不良影响的，给予警告或者严重警告处分；情节严重的，给予开除党籍处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q247",
+      "type": "truefalse",
+      "stem": "党员领导干部在本人主政的地方或者分管的部门自行其是，搞山头主义，拒不执行党中央确定的大政方针，甚至背着党中央另搞一套的，给予开除党籍处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q248",
+      "type": "truefalse",
+      "stem": "违纪党员在党组织作出处分决定前死亡，或者在死亡之后发现其曾有严重违纪行为，不再处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q249",
+      "type": "truefalse",
+      "stem": "依法应当留置的被调查人如果在逃，监察机关可以决定在本行政区域内通缉，由监察机关发布通缉令。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q250",
+      "type": "truefalse",
+      "stem": "党员不可加入外国国籍，但可取得他国永久居留资格或长期居留许可。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q251",
+      "type": "truefalse",
+      "stem": "中央八项规定精神重点纠治形式主义、官僚主义，坚决破除特权思想和特权行为。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q252",
+      "type": "truefalse",
+      "stem": "党员受到开除党籍处分后永远不得重新入党。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q253",
+      "type": "truefalse",
+      "stem": "中国共产党第一次全国代表大会于 1921 年 7 月23 日在上海召开，最后一天的会议转移到浙江嘉兴南湖举行。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q254",
+      "type": "truefalse",
+      "stem": "党员受留党察看处分期间，有选举权，没有被选举权。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q255",
+      "type": "truefalse",
+      "stem": "党的各级代表大会的代表受到留党察看以上（含留党察看）处分的，党组织应当终止其代表资格。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q256",
+      "type": "truefalse",
+      "stem": "受到改组处理的党组织领导机构成员，除应当受到撤销党内职务以上（含撤销党内职务）处分的情况外，均自然免职。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q257",
+      "type": "truefalse",
+      "stem": "党纪处分决定作出后，应当在 15 天内向受处分党员所在党的基层组织中的全体党员及其本人宣布。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q258",
+      "type": "truefalse",
+      "stem": "党内严格禁止用违反党章和国家法律的手段对待党员，严格禁止打击报复和诬告陷害，违反这些规定的组织或个人必须受到党的纪律和国家法律的追究。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q259",
+      "type": "truefalse",
+      "stem": "党的问责工作是由党组织按照人事权限予以追究。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q260",
+      "type": "truefalse",
+      "stem": "问责决定作出后，应当及时向被问责党组织或者党的领导干部及其所在党组织宣布并督促执行。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q261",
+      "type": "truefalse",
+      "stem": "问责对象是各级党委（党组）、党的工作部门及其领导成员，各级纪委（纪检组）及其领导成员，重点是主要负责人。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q262",
+      "type": "truefalse",
+      "stem": "《中国共产党党内监督条例》规定， 党内监督必须贯彻民主集中制，依规依纪进行，强化自上而下的组织监督，改进自下而上的民主监督，发挥同级相互监督作用。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q263",
+      "type": "truefalse",
+      "stem": "从轻处分，是指在《中国共产党纪律处分条例》规定的违纪行为应当受到的处分幅度以内，减轻一档给予处分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q264",
+      "type": "truefalse",
+      "stem": "《党政领导干部选拔任用工作条例》规定， 任职试用期未满或者提拔任职不满一年的，不得破格提拔，但是特殊情况下可以提拔。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q265",
+      "type": "truefalse",
+      "stem": "遵义会议事实上确立了以毛泽东为核心的党中央的正确领导。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q266",
+      "type": "truefalse",
+      "stem": "中国共产党人的初心和使命，就是为中国人民谋幸福，为中华民族谋复兴。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q267",
+      "type": "truefalse",
+      "stem": "公职人员在公务活动中接受的礼品，价值未超过 500 元的，可以不上交。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q268",
+      "type": "truefalse",
+      "stem": "只要不贪污受贿，其他一些小的违反纪律行为可以忽略不计。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q269",
+      "type": "truefalse",
+      "stem": "党员必须维护党的团结和统一，对党忠诚老实，言行一致。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q270",
+      "type": "truefalse",
+      "stem": "党员领导干部廉洁自律规范要求廉洁用权， 自觉维护人民根本利益。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q271",
+      "type": "truefalse",
+      "stem": "在完善涉外国家安全机制中不需要强化海外利益和风险投资预警。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q272",
+      "type": "truefalse",
+      "stem": "坚持持之以恒正风肃纪和一体推进三不腐是有鲜明的问题导向的，主要针对的问题就是党的作风问题和执纪违纪问题。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q273",
+      "type": "truefalse",
+      "stem": "正风肃纪是习近平总书记关于党的建设的重要思想和重要组成部分，正风肃纪包括党的作风建设和党的纪律建设两个部分。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q274",
+      "type": "truefalse",
+      "stem": "不敢腐、不能腐、不想腐是三个阶段的划分任何一方面的滞后，都会影响反腐败整体进程和综合效果，必须同向发力，实现效应叠加。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q275",
+      "type": "truefalse",
+      "stem": "党的十八大以来，我们党从制定和落实中央八项规定开局破解，在破四风方面取得了显著成效，“四风”是指自由主义、利己主义、享乐主义和奢靡之风。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q276",
+      "type": "truefalse",
+      "stem": "党坚持标本兼治、综合治理、惩防并举、注重预防的方针，建立健全惩治和预防腐败体系，坚持不懈的防止腐败，加强党的作风建设和廉政建设。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q277",
+      "type": "truefalse",
+      "stem": "党员必须坚持党和人民的利益高于一切，个人利益服从党和人民的利益，吃苦在前享乐在后，克己奉公，乐于奉献。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q278",
+      "type": "truefalse",
+      "stem": "《党章》规定，发展团员必须经过所在单位领导班子，坚持个别吸收的原则。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q279",
+      "type": "truefalse",
+      "stem": "监督是权力运行的根本保证，是加强和规范党内政治生活的重要举措。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "",
+      "points": 2
+    },
+    {
+      "id": "q280",
+      "type": "truefalse",
+      "stem": "中央八项规定提出，要改进工作作风，切忌走过场、搞形式主义；要轻车简从，减少陪同，简化接待。",
+      "options": [
+        "正确",
+        "错误"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "",
+      "points": 2
+    }
+  ]};
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载题目数据
+            loadQuestions();
+            
+            // 搜索功能
+            document.getElementById('search-input').addEventListener('input', function() {
+                filterQuestions();
+            });
+            
+            // 类型筛选功能
+            document.getElementById('type-filter').addEventListener('change', function() {
+                filterQuestions();
+            });
+        });
+
+        // 加载题目
+        function loadQuestions() {
+            try {
+                // 检查数据结构
+                if (questionsData.questions && Array.isArray(questionsData.questions)) {
+                    updateStats();
+                    displayQuestions(questionsData.questions);
+                } else {
+                    throw new Error('数据格式不正确，应该包含"questions"数组');
+                }
+            } catch (error) {
+                document.getElementById('questions-container').innerHTML = 
+                    `<div class="no-results">加载失败: ${error.message}</div>`;
+            }
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            const questions = questionsData.questions;
+            const totalCount = questions.length;
+            const singleCount = questions.filter(q => q.type === 'single').length;
+            const multipleCount = questions.filter(q => q.type === 'multiple').length;
+            const truefalseCount = questions.filter(q => q.type === 'truefalse').length;
+            const textCount = questions.filter(q => q.type === 'text').length;
+            
+            document.getElementById('total-count').textContent = totalCount;
+            document.getElementById('single-count').textContent = singleCount;
+            document.getElementById('multiple-count').textContent = multipleCount;
+            document.getElementById('truefalse-count').textContent = truefalseCount;
+            document.getElementById('text-count').textContent = textCount;
+        }
+
+        // 显示题目
+        function displayQuestions(questions) {
+            const container = document.getElementById('questions-container');
+            
+            if (questions.length === 0) {
+                container.innerHTML = '<div class="no-results">没有找到符合条件的题目</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            questions.forEach(question => {
+                const questionCard = createQuestionCard(question);
+                container.appendChild(questionCard);
+            });
+        }
+
+        // 创建题目卡片
+        function createQuestionCard(question) {
+            const card = document.createElement('div');
+            card.className = `question-card type-${question.type}`;
+            card.dataset.id = question.id;
+            
+            // 题目头部
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.innerHTML = `
+                <span class="question-id">${question.id}</span>
+                <span class="question-type">${getTypeName(question.type)}</span>
+            `;
+            card.appendChild(header);
+            
+            // 题目题干
+            const stem = document.createElement('div');
+            stem.className = 'question-stem';
+            stem.textContent = question.stem;
+            card.appendChild(stem);
+            
+            // 选择题选项
+            if (question.type === 'single' || question.type === 'multiple' || question.type === 'truefalse') {
+                const optionsList = document.createElement('div');
+                optionsList.className = 'options-list';
+                
+                question.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.dataset.index = index;
+                    
+                    optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                    
+                    // 添加点击事件
+                    optionDiv.addEventListener('click', function() {
+                        handleOptionClick(question, index, card);
+                    });
+                    
+                    optionsList.appendChild(optionDiv);
+                });
+                
+                card.appendChild(optionsList);
+            }
+            
+            // 填空题输入框
+            if (question.type === 'text') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'text-answer';
+                input.placeholder = '请输入答案';
+                card.appendChild(input);
+            }
+            
+            // 答案和解析区域
+            const answerSection = document.createElement('div');
+            answerSection.className = 'answer-section';
+            answerSection.id = `answer-${question.id}`;
+            
+            const answerTitle = document.createElement('div');
+            answerTitle.className = 'answer-title';
+            
+            if (question.type === 'single' || question.type === 'multiple' || question.type === 'truefalse') {
+                if (question.answer && question.answer.length > 0) {
+                    const answerText = question.answer.map(index => String.fromCharCode(65 + index)).join('、');
+                    answerTitle.textContent = `正确答案：${answerText}`;
+                } else {
+                    answerTitle.textContent = '正确答案：暂无';
+                }
+            } else if (question.type === 'text') {
+                answerTitle.textContent = '参考答案：';
+            }
+            
+            answerSection.appendChild(answerTitle);
+            
+            if (question.type === 'text' && question.explanation) {
+                const answerText = document.createElement('div');
+                // 从explanation中提取参考答案
+                const match = question.explanation.match(/参考答案：(.*)/);
+                if (match) {
+                    answerText.textContent = match[1];
+                } else {
+                    answerText.textContent = question.explanation;
+                }
+                answerSection.appendChild(answerText);
+            }
+            
+            if (question.explanation && question.type !== 'text') {
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.textContent = question.explanation;
+                answerSection.appendChild(explanation);
+            }
+            
+            card.appendChild(answerSection);
+            
+            // 结果消息
+            const resultMessage = document.createElement('div');
+            resultMessage.className = 'result-message';
+            resultMessage.id = `result-${question.id}`;
+            card.appendChild(resultMessage);
+            
+            // 控制按钮
+            const controls = document.createElement('div');
+            controls.className = 'controls';
+            
+            if (question.type === 'text') {
+                const checkBtn = document.createElement('button');
+                checkBtn.className = 'check-btn';
+                checkBtn.textContent = '检查答案';
+                checkBtn.addEventListener('click', function() {
+                    checkTextAnswer(question, card);
+                });
+                controls.appendChild(checkBtn);
+            }
+            
+            const showAnswerBtn = document.createElement('button');
+            showAnswerBtn.className = 'show-answer-btn';
+            showAnswerBtn.textContent = '显示答案';
+            showAnswerBtn.addEventListener('click', function() {
+                showAnswer(question, card);
+            });
+            controls.appendChild(showAnswerBtn);
+            
+            card.appendChild(controls);
+            
+            return card;
+        }
+
+        // 处理选项点击
+        function handleOptionClick(question, index, card) {
+            const options = card.querySelectorAll('.option');
+            const resultMessage = card.querySelector('.result-message');
+            const answerSection = card.querySelector('.answer-section');
+            
+            // 如果是单选题或判断题，只能选一个
+            if (question.type === 'single' || question.type === 'truefalse') {
+                options.forEach(opt => opt.classList.remove('selected'));
+                options[index].classList.add('selected');
+                
+                // 立即检查答案
+                checkAnswer(question, [index], card);
+            } 
+            // 如果是多选题，可以选多个
+            else if (question.type === 'multiple') {
+                options[index].classList.toggle('selected');
+                
+                // 获取所有选中的选项
+                const selectedOptions = Array.from(options)
+                    .filter(opt => opt.classList.contains('selected'))
+                    .map(opt => parseInt(opt.dataset.index));
+                
+                // 检查答案
+                checkAnswer(question, selectedOptions, card);
+            }
+        }
+
+        // 检查选择题答案
+        function checkAnswer(question, selectedOptions, card) {
+            const resultMessage = card.querySelector('.result-message');
+            const options = card.querySelectorAll('.option');
+            
+            // 清除之前的样式
+            options.forEach(opt => {
+                opt.classList.remove('correct-option', 'incorrect-option');
+            });
+            
+            // 标记正确答案
+            question.answer.forEach(index => {
+                options[index].classList.add('correct-option');
+            });
+            
+            // 检查答案是否正确
+            const isCorrect = arraysEqual(selectedOptions.sort(), question.answer.sort());
+            
+            // 显示结果
+            resultMessage.textContent = isCorrect ? '回答正确！' : '回答错误！';
+            resultMessage.className = `result-message ${isCorrect ? 'correct' : 'incorrect'}`;
+            resultMessage.style.display = 'block';
+            
+            // 更新统计信息
+            updateScoreStats(isCorrect);
+        }
+
+        // 检查填空题答案
+        function checkTextAnswer(question, card) {
+            const input = card.querySelector('.text-answer');
+            const resultMessage = card.querySelector('.result-message');
+            const answerSection = card.querySelector('.answer-section');
+            
+            // 从explanation中提取参考答案
+            const match = question.explanation.match(/参考答案：(.*)/);
+            const correctAnswer = match ? match[1].trim() : '';
+            const userAnswer = input.value.trim();
+            
+            // 简单比较答案
+            const isCorrect = userAnswer === correctAnswer;
+            
+            // 显示结果
+            resultMessage.textContent = isCorrect ? '回答正确！' : '回答错误！';
+            resultMessage.className = `result-message ${isCorrect ? 'correct' : 'incorrect'}`;
+            resultMessage.style.display = 'block';
+            
+            // 显示答案区域
+            answerSection.style.display = 'block';
+            
+            // 更新统计信息
+            updateScoreStats(isCorrect);
+        }
+
+        // 显示答案
+        function showAnswer(question, card) {
+            const answerSection = card.querySelector('.answer-section');
+            const options = card.querySelectorAll('.option');
+            
+            // 显示答案区域
+            answerSection.style.display = 'block';
+            
+            // 标记正确答案
+            if (question.type !== 'text') {
+                options.forEach(opt => {
+                    opt.classList.remove('correct-option', 'incorrect-option');
+                });
+                
+                question.answer.forEach(index => {
+                    options[index].classList.add('correct-option');
+                });
+            }
+        }
+
+        // 更新得分统计
+        function updateScoreStats(isCorrect) {
+            let answered = parseInt(localStorage.getItem('answered') || '0');
+            let correct = parseInt(localStorage.getItem('correct') || '0');
+            let incorrect = parseInt(localStorage.getItem('incorrect') || '0');
+            
+            answered++;
+            if (isCorrect) {
+                correct++;
+            } else {
+                incorrect++;
+            }
+            
+            localStorage.setItem('answered', answered);
+            localStorage.setItem('correct', correct);
+            localStorage.setItem('incorrect', incorrect);
+            
+            const percent = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+            
+            document.getElementById('answered-count').textContent = answered;
+            document.getElementById('correct-count').textContent = correct;
+            document.getElementById('incorrect-count').textContent = incorrect;
+            document.getElementById('score-percent').textContent = `${percent}%`;
+        }
+
+        // 加载得分统计
+        function loadScoreStats() {
+            const answered = parseInt(localStorage.getItem('answered') || '0');
+            const correct = parseInt(localStorage.getItem('correct') || '0');
+            const incorrect = parseInt(localStorage.getItem('incorrect') || '0');
+            const percent = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+            
+            document.getElementById('answered-count').textContent = answered;
+            document.getElementById('correct-count').textContent = correct;
+            document.getElementById('incorrect-count').textContent = incorrect;
+            document.getElementById('score-percent').textContent = `${percent}%`;
+        }
+
+        // 比较两个数组是否相等
+        function arraysEqual(a, b) {
+            if (a === b) return true;
+            if (a == null || b == null) return false;
+            if (a.length !== b.length) return false;
+            
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        // 获取类型名称
+        function getTypeName(type) {
+            const typeNames = {
+                'single': '单选题',
+                'multiple': '多选题',
+                'truefalse': '判断题',
+                'text': '填空题'
+            };
+            return typeNames[type] || type;
+        }
+
+        // 筛选题目
+        function filterQuestions() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value;
+            
+            const filteredQuestions = questionsData.questions.filter(question => {
+                // 类型筛选
+                if (typeFilter !== 'all' && question.type !== typeFilter) {
+                    return false;
+                }
+                
+                // 关键词搜索
+                if (searchTerm) {
+                    return question.stem.toLowerCase().includes(searchTerm);
+                }
+                
+                return true;
+            });
+            
+            displayQuestions(filteredQuestions);
+        }
+
+        // 初始化时加载得分统计
+        loadScoreStats();
+    </script>
+</body>
+</html>
